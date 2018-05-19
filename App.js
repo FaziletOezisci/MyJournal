@@ -1,23 +1,30 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default class App extends React.Component {
+  state = {item: null};
   render() {
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+        <Text> {this.state.item || 'Keine Einträge im Tagebuch'}</Text>
+        <TextInput style={styles.input} placeholder = "Tagebucheintrag erstellen" 
+        returnKeyType = "done"
+        //Use onChangeText for refresh the text in real time
+        //onChangeText={(item) => this.setState({item})}/>
+
+        //Use onSubmitEditing for refresh the text after pushing the Enter-Button 
+        onSubmitEditing = {event => this.setState({ item: event.nativeEvent.text})}/>
       </View>
-    );
+    ); 
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+  },
+  input: {
+    height: 40
   },
 });
