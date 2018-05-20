@@ -1,30 +1,40 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default class App extends React.Component {
-  state = {items: []};
+  state = { items: [] };
+
+  _addItem(text) {
+    this.setState({
+      items: [...this.state.items, {text, date: Date.now() }]
+    });
+    this.textInput.clear();
+  }
+
   render() {
-    let content = <Text>Keine Einträge im Tagebuch</Text>
+    let content = <Text>Keine Einträge im Tagebuch</Text>;
     if (this.state.items.length > 0) {
       content = (
         <FlatList
-        style = {styles.list}
-        data = {this.state.items}
-        renderItem = {({item}) => <Text>{item.text}</Text>}
-        keyExtractor = {item => item.date}
+        style={styles.list}
+        data={this.state.items}
+        renderItem={({item}) => <Text>{item.text}</Text>}
+        keyExtractor={item => String(item.date)}
         />
       );
     }
     return (
       <View style={styles.container}>
-        <Text> {this.state.item || 'Keine Einträge im Tagebuch'}</Text>
-        <TextInput style={styles.input} placeholder = "Tagebucheintrag erstellen" 
-        returnKeyType = "done"
-        //Use onChangeText for refresh the text in real time
-        //onChangeText={(item) => this.setState({item})}/>
-
-        //Use onSubmitEditing for refresh the text after pushing the Enter-Button 
-        onSubmitEditing = {event => this.setState({ item: event.nativeEvent.text})}/>      
+        {content}
+        <KeyboardAvoidingView behavior="padding">
+          <TextInput
+          style={styles.input} 
+          ref = {input => (this.textInput = input)}
+          placeholder="Tagebucheintrag erstellen"
+          returnKeyType="done"
+          onSubmitEditing={event => this._addItem(event.nativeEvent.text)}
+          />
+        </KeyboardAvoidingView>    
       </View>
     ); 
   }
@@ -33,7 +43,7 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   list: {
     marginTop: 24
